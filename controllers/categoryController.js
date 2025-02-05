@@ -7,6 +7,12 @@ exports.createCategory = async (req, res) => {
       return res.status(422).json({ error: 'Name is required' });
     }
 
+    if (await prisma.category.findUnique({ where: { name: req.body.name } })) {
+      return res
+        .status(409)
+        .json({ error: `${req.body.name} category already exists` });
+    }
+
     const newCategory = await prisma.category.create({
       data: {
         name: req.body.name,
